@@ -1,58 +1,91 @@
 const events = [
   {
     id: 1,
-    title: "Art in the Park",
-    category: "exhibition",
-    date: "April 10, 2026",
-    location: "Kongens Have, Copenhagen",
-    description: "An outdoor art exhibition in the beautiful Kongens Have park.",
-    price: "100 DKK",
-    lat: 55.6867,
-    lng: 12.5772
+    title: "Distortion X – Rådhuspladsen",
+    category: "lighting",
+    date: "June 3, 2026",
+    location: "Rådhuspladsen, Copenhagen",
+    description: "Help with stage lighting at Distortion X opening night on Copenhagen's iconic City Hall Square. Massive crowd, unforgettable experience.",
+    price: "Free festival pass",
+    lat: 55.6761,
+    lng: 12.5683
   },
   {
     id: 2,
-    title: "Knitting Workshop",
-    category: "workshop",
-    date: "April 15, 2026",
-    location: "Absalons Kirken, Copenhagen",
-    description: "Learn to knit with friendly locals in a cosy church setting.",
-    price: "Free",
-    lat: 55.6717,
-    lng: 12.5617
+    title: "Distortion X – Vesterbro",
+    category: "sound",
+    date: "June 4, 2026",
+    location: "Jernbanebyen, Vesterbro, Copenhagen",
+    description: "Sound assistant needed for Distortion X Vesterbro at the new Jernbanebyen venue. Work alongside professional sound engineers.",
+    price: "Free entry + dinner",
+    lat: 55.6697,
+    lng: 12.5478
   },
   {
     id: 3,
-    title: "Crochet a Teddy Bear",
-    category: "workshop",
-    date: "April 20, 2026",
-    location: "Mokkariet, Copenhagen",
-    description: "Crochet your own teddy bear and enjoy a free coffee!",
-    price: "50 DKK + free coffee",
-    lat: 55.6894,
-    lng: 12.5590
+    title: "Distortion Ø – Photography",
+    category: "photography",
+    date: "June 5, 2026",
+    location: "Refshaleøen, Copenhagen",
+    description: "Photograph the legendary Distortion Ø rave at Refshaleøen. Add incredible festival shots to your portfolio.",
+    price: "Free festival pass",
+    lat: 55.6934,
+    lng: 12.6187
   },
   {
     id: 4,
-    title: "Craft Market Nørrebro",
-    category: "market",
-    date: "April 25, 2026",
-    location: "Nørrebro, Copenhagen",
-    description: "A vibrant market full of handmade crafts and local artisans.",
-    price: "Free entry",
-    lat: 55.6935,
-    lng: 12.5530
+    title: "Distortion Ø – Video Operator",
+    category: "video",
+    date: "June 6, 2026",
+    location: "Refshaleøen, Copenhagen",
+    description: "Operate video screens and live cameras at Distortion Ø finale night. Work with Peggy Gou and more on stage.",
+    price: "Free festival pass + backstage",
+    lat: 55.6920,
+    lng: 12.6200
   },
   {
     id: 5,
-    title: "Photography Exhibition",
-    category: "exhibition",
-    date: "May 1, 2026",
-    location: "Vesterbro, Copenhagen",
-    description: "Local photographers showcase their work in this intimate exhibition.",
-    price: "Free",
-    lat: 55.6680,
-    lng: 12.5490
+    title: "Roskilde Festival – Stage Setup",
+    category: "stage",
+    date: "June 28, 2026",
+    location: "Roskilde Festival, Roskilde",
+    description: "Help build and tear down stages at Denmark's biggest festival. Physical work but incredible behind the scenes experience.",
+    price: "Free festival pass",
+    lat: 55.6441,
+    lng: 12.0831
+  },
+  {
+    id: 6,
+    title: "Vega Live – Sound Assistant",
+    category: "sound",
+    date: "May 30, 2026",
+    location: "Vega, Vesterbro, Copenhagen",
+    description: "Assist the sound engineer at one of Copenhagen's most iconic venues. Learn live mixing on the job.",
+    price: "Free entry + dinner",
+    lat: 55.6697,
+    lng: 12.5478
+  },
+  {
+    id: 7,
+    title: "Culture Box – DJ Shadow",
+    category: "dj",
+    date: "June 15, 2026",
+    location: "Culture Box, Copenhagen",
+    description: "Shadow a professional DJ for a full night at Culture Box. Learn the technical and creative side of DJing.",
+    price: "Free entry",
+    lat: 55.6784,
+    lng: 12.5912
+  },
+  {
+    id: 8,
+    title: "CPH Opera – Video Operator",
+    category: "video",
+    date: "June 20, 2026",
+    location: "Copenhagen Opera House",
+    description: "Operate video screens and live feed cameras at the Opera House. Unique experience in a world class venue.",
+    price: "Free ticket + backstage access",
+    lat: 55.6783,
+    lng: 12.5996
   }
 ]
 
@@ -104,13 +137,13 @@ function renderMarkers() {
 
     const infoWindow = new google.maps.InfoWindow({
       content: `
-        <div style="max-width:200px">
-          <strong>${event.title}</strong><br>
-          <span>${event.date}</span><br>
-          <span>${event.location}</span><br><br>
+        <div style="max-width:200px; font-family: Arial, sans-serif;">
+          <strong style="color:#c0566a;">${event.title}</strong><br>
+          <span style="color:#888;">📅 ${event.date}</span><br>
+          <span style="color:#888;">📍 ${event.location}</span><br><br>
           <a href="event.html?id=${event.id}" 
              style="background:#e9899b;color:white;padding:5px 10px;
-                    border-radius:4px;text-decoration:none;">
+                    border-radius:4px;text-decoration:none;font-size:0.85rem;">
             See more
           </a>
         </div>

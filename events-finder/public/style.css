@@ -5,12 +5,11 @@
 }
 
 body {
-  height: 100vh;
-  width: 100vw;
   font-family: Arial, sans-serif;
   background-color: #feeaed;
 }
 
+/* MAP PAGE */
 #map {
   height: 100vh;
   width: 100vw;
@@ -30,7 +29,6 @@ body {
   max-width: 500px;
 }
 
-/* The search input box */
 #search-input {
   width: 100%;
   padding: 12px 20px;
@@ -44,6 +42,8 @@ body {
 #filters {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .filter-btn {
@@ -60,4 +60,50 @@ body {
 .filter-btn.active {
   background: #e9899b;
   color: white;
+}
+
+/* EVENT DETAIL PAGE */
+.event-page {
+  min-height: 100vh;
+}
+
+#event-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+#back-btn {
+  color: #e9899b;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+#event-container h1 {
+  margin: 1rem 0;
+  color: #c0566a;
+  font-size: 2rem;
+}
+
+#event-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #7a4f4f;
+}
+
+#event-description {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #555;
+  margin-bottom: 2rem;
+}
+
+#event-map {
+  height: 300px;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
 }
