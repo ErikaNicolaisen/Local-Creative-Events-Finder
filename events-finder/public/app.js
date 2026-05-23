@@ -65,11 +65,12 @@ function renderMarkers() {
           <strong style="color:#c0566a;">${event.title}</strong><br>
           <span style="color:#888;">📅 ${event.date}</span><br>
           <span style="color:#888;">📍 ${event.location}</span><br><br>
-          <a href="event.html?id=${event.id}" 
-             style="background:#e9899b;color:white;padding:5px 10px;
-                    border-radius:4px;text-decoration:none;font-size:0.85rem;">
-            See more
-          </a>
+            <a href="${event.link || 'event.html?id=' + event.id}" 
+              target="${event.link ? '_blank' : '_self'}"
+              style="background:#e9899b;color:white;padding:5px 10px;
+                      border-radius:4px;text-decoration:none;font-size:0.85rem;">
+              See more
+            </a>
         </div>
       `
     })

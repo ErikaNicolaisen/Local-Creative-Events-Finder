@@ -1,9 +1,24 @@
 function initEventPage() {
   const params = new URLSearchParams(window.location.search)
   const id = parseInt(params.get('id'))
-  const event = events.find(e => e.id === id)
-  if (!event) return
 
+  // First check local events array
+  let event = events.find(e => e.id === id)
+
+  if (event) {
+    showEvent(event)
+  } else {
+    // If not found locally, fetch from server
+    fetch('http://localhost:3000/events')
+      .then(r => r.json())
+      .then(scraped => {
+        event = scraped.find(e => e.id === id)
+        if (event) showEvent(event)
+      })
+  }
+}
+
+function showEvent(event) {
   document.title = event.title + ' – StageUp CPH'
   document.getElementById('event-title').textContent = event.title
   document.getElementById('event-date').textContent = '📅 ' + event.date
