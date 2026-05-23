@@ -59,21 +59,23 @@ function renderMarkers() {
       title: event.title
     })
 
-    const infoWindow = new google.maps.InfoWindow({
-      content: `
-        <div style="max-width:500px; font-family: Arial, sans-serif;">
-          <strong style="color:#c0566a;">${event.title}</strong><br>
-          <span style="color:#888;">📅 ${event.date}</span><br>
-          <span style="color:#888;">📍 ${event.location}</span><br><br>
-            <a href="${event.link || 'event.html?id=' + event.id}" 
-              target="${event.link ? '_blank' : '_self'}"
-              style="background:#e9899b;color:white;padding:5px 10px;
-                      border-radius:4px;text-decoration:none;font-size:0.85rem;">
-              See more
-            </a>
-        </div>
-      `
-    })
+const link = event.link ? event.link : 'event.html?id=' + event.id
+const target = event.link ? '_blank' : '_self'
+
+const infoWindow = new google.maps.InfoWindow({
+  content: `
+    <div style="max-width:500px; font-family: Arial, sans-serif;">
+      <strong style="color:#c0566a;">${event.title}</strong><br>
+      <span style="color:#888;">📅 ${event.date}</span><br>
+      <span style="color:#888;">📍 ${event.location}</span><br><br>
+      <a href="${link}" target="${target}"
+         style="background:#e9899b;color:white;padding:5px 10px;
+                border-radius:4px;text-decoration:none;font-size:0.85rem;">
+        See more
+      </a>
+    </div>
+  `
+})
 
     marker.addListener('click', () => {
       infoWindow.open(map, marker)
@@ -103,11 +105,26 @@ function setupFilters() {
   })
 }
 
-  async function loadScrapedEvents() {
+async function loadScrapedEvents() {
   try {
-    const response = await fetch('http://localhost:3000/events')
-    const scraped = await response.json()
-    scraped.forEach(event => events.push(event))
+    const [byStudentsRes, kuneRes] = await Promise.all([
+      fetch('http://localhost:3000/events'),
+      fetch('http://localhost:3000/kune')
+    ])
+
+    const byStudents = await byStudentsRes.json()
+    const kune = await kuneRes.json()
+
+    byStudents.forEach(event => {
+      event.link = 'https://bystudents.dk/en/events/'
+      events.push(event)
+    })
+
+    kune.forEach(event => {
+      delete event.link
+      events.push(event)
+    })
+
     renderMarkers()
   } catch (err) {
     console.error('Could not load scraped events:', err)

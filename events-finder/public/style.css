@@ -9,7 +9,6 @@ body {
   background-color: #feeaed;
 }
 
-/* MAP PAGE */
 #map {
   height: 100vh;
   width: 100vw;
@@ -62,7 +61,6 @@ body {
   color: white;
 }
 
-/* EVENT DETAIL PAGE */
 .event-page {
   min-height: 100vh;
 }
@@ -182,4 +180,9 @@ body {
   margin-top: 1rem;
   color: #c0566a;
   font-size: 1.1rem;
+}
+
+.filter-btn[data-category="scraped"].active {
+  background: #89b4e0;
+  color: white;
 }
