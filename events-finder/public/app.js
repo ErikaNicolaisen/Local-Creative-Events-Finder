@@ -9,83 +9,6 @@ const events = [
     price: "Free festival pass",
     lat: 55.6761,
     lng: 12.5683
-  },
-  {
-    id: 2,
-    title: "Distortion X – Vesterbro",
-    category: "sound",
-    date: "June 4, 2026",
-    location: "Jernbanebyen, Vesterbro, Copenhagen",
-    description: "Sound assistant needed for Distortion X Vesterbro at the new Jernbanebyen venue. Work alongside professional sound engineers.",
-    price: "Free entry + dinner",
-    lat: 55.6697,
-    lng: 12.5478
-  },
-  {
-    id: 3,
-    title: "Distortion Ø – Photography",
-    category: "photography",
-    date: "June 5, 2026",
-    location: "Refshaleøen, Copenhagen",
-    description: "Photograph the legendary Distortion Ø rave at Refshaleøen. Add incredible festival shots to your portfolio.",
-    price: "Free festival pass",
-    lat: 55.6934,
-    lng: 12.6187
-  },
-  {
-    id: 4,
-    title: "Distortion Ø – Video Operator",
-    category: "video",
-    date: "June 6, 2026",
-    location: "Refshaleøen, Copenhagen",
-    description: "Operate video screens and live cameras at Distortion Ø finale night. Work with Peggy Gou and more on stage.",
-    price: "Free festival pass + backstage",
-    lat: 55.6920,
-    lng: 12.6200
-  },
-  {
-    id: 5,
-    title: "Roskilde Festival – Stage Setup",
-    category: "stage",
-    date: "June 28, 2026",
-    location: "Roskilde Festival, Roskilde",
-    description: "Help build and tear down stages at Denmark's biggest festival. Physical work but incredible behind the scenes experience.",
-    price: "Free festival pass",
-    lat: 55.6441,
-    lng: 12.0831
-  },
-  {
-    id: 6,
-    title: "Vega Live – Sound Assistant",
-    category: "sound",
-    date: "May 30, 2026",
-    location: "Vega, Vesterbro, Copenhagen",
-    description: "Assist the sound engineer at one of Copenhagen's most iconic venues. Learn live mixing on the job.",
-    price: "Free entry + dinner",
-    lat: 55.6697,
-    lng: 12.5478
-  },
-  {
-    id: 7,
-    title: "Culture Box – DJ Shadow",
-    category: "dj",
-    date: "June 15, 2026",
-    location: "Culture Box, Copenhagen",
-    description: "Shadow a professional DJ for a full night at Culture Box. Learn the technical and creative side of DJing.",
-    price: "Free entry",
-    lat: 55.6784,
-    lng: 12.5912
-  },
-  {
-    id: 8,
-    title: "CPH Opera – Video Operator",
-    category: "video",
-    date: "June 20, 2026",
-    location: "Copenhagen Opera House",
-    description: "Operate video screens and live feed cameras at the Opera House. Unique experience in a world class venue.",
-    price: "Free ticket + backstage access",
-    lat: 55.6783,
-    lng: 12.5996
   }
 ]
 
@@ -108,7 +31,7 @@ styles: [
   { featureType: "road.arterial", elementType: "geometry.fill", stylers: [{ color: "#ffe0e0" }] },
   { featureType: "road.highway", elementType: "geometry.fill", stylers: [{ color: "#ec2121" }] },
   { featureType: "park", elementType: "geometry.fill", stylers: [{ color: "#daede9" }] },
-  { featureType: "landscape", elementType: "geometry.fill", stylers: [{ color: "#f1c1c1" }] },
+  { featureType: "landscape", elementType: "geometry.fill", stylers: [{ color: "#f4d3d3" }] },
   { featureType: "poi", stylers: [{ visibility: "off" }] },
   { featureType: "transit", stylers: [{ visibility: "off" }] }
 ]
@@ -116,6 +39,7 @@ styles: [
   renderMarkers()
   setupSearch()
   setupFilters()
+  loadScrapedEvents()
 }
 
 function renderMarkers() {
@@ -137,7 +61,7 @@ function renderMarkers() {
 
     const infoWindow = new google.maps.InfoWindow({
       content: `
-        <div style="max-width:200px; font-family: Arial, sans-serif;">
+        <div style="max-width:500px; font-family: Arial, sans-serif;">
           <strong style="color:#c0566a;">${event.title}</strong><br>
           <span style="color:#888;">📅 ${event.date}</span><br>
           <span style="color:#888;">📍 ${event.location}</span><br><br>
@@ -176,4 +100,15 @@ function setupFilters() {
       renderMarkers()
     })
   })
+}
+
+  async function loadScrapedEvents() {
+  try {
+    const response = await fetch('http://localhost:3000/events')
+    const scraped = await response.json()
+    scraped.forEach(event => events.push(event))
+    renderMarkers()
+  } catch (err) {
+    console.error('Could not load scraped events:', err)
+  }
 }

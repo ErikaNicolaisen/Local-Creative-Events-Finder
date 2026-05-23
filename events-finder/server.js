@@ -10,41 +10,39 @@ const PORT = 3000
 
 app.use(express.static('public'))
 
-// This route scrapes events from Kultunaut
 app.get('/events', async (req, res) => {
   try {
-    // Fetch the Kultunaut Copenhagen events page
-    const response = await axios.get('https://www.kultunaut.dk/perl/arrlist/type-nynaut?Area=Storkøbenhavn&periode=kommende')
-    
-    // Load the HTML into cheerio so we can search through it
+    const response = await axios.get('https://bystudents.dk/en/events/', {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    })
+
     const $ = cheerio.load(response.data)
-    
     const events = []
+    let id = 100
 
-    // Loop through each event on the page
-    $('.arrlist-item').each((i, el) => {
-      const title = $(el).find('.arrlist-title').text().trim()
-      const date = $(el).find('.arrlist-date').text().trim()
-      const location = $(el).find('.arrlist-location').text().trim()
+    $('a[title]').each((i, el) => {
+      const title = $(el).attr('title')
+      const link = $(el).attr('href')
 
-      if (title) {
+      if (title && title.length > 2) {
         events.push({
-          id: i + 100,
-          title,
-          date,
-          location,
+          id: id++,
+          title: title,
+          date: 'See bystudents.dk for dates',
+          location: 'Copenhagen',
           category: 'scraped',
-          description: 'Event scraped from Kultunaut.dk',
-          price: 'See website',
-          lat: 55.6761 + (Math.random() - 0.5) * 0.05,
-          lng: 12.5683 + (Math.random() - 0.5) * 0.05
+          description: 'Student event in Copenhagen from byStudents.dk',
+          price: 'Free for students',
+          lat: 55.6761 + (Math.random() - 0.5) * 0.04,
+          lng: 12.5683 + (Math.random() - 0.5) * 0.04
         })
       }
     })
 
+    console.log('Found:', events.length)
     res.json(events)
-  } catch (error) {
-    console.error('Scraping error:', error.message)
+  } catch (err) {
+    console.error(err.message)
     res.json([])
   }
 })
@@ -54,5 +52,5 @@ app.get('/config', (req, res) => {
 })
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`)
+  console.log('Server running at http://localhost:' + PORT)
 })

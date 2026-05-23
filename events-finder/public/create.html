@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Post Opportunity – StageUp CPH</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="form-page">
+
+  <div id="form-container">
+    <a href="index.html" id="back-btn">← Back to map</a>
+    <h1>Post a Crew Opportunity</h1>
+    <p class="form-subtitle">Need help at your event? Post it here and find experienced volunteers.</p>
+
+    <div class="form-group">
+      <label>Event Title</label>
+      <input type="text" id="input-title" placeholder="e.g. Roskilde Festival – Lighting Crew">
+    </div>
+
+    <div class="form-group">
+      <label>Category</label>
+      <select id="input-category">
+        <option value="lighting">Lighting</option>
+        <option value="sound">Sound</option>
+        <option value="photography">Photography</option>
+        <option value="stage">Stage Setup</option>
+        <option value="dj">DJ</option>
+        <option value="video">Video</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="input-date">
+    </div>
+
+    <div class="form-group">
+      <label>Location</label>
+      <input type="text" id="input-location" placeholder="e.g. Vega, Vesterbro, Copenhagen">
+    </div>
+
+    <div class="form-group">
+      <label>Description</label>
+      <textarea id="input-description" rows="4" placeholder="Describe what volunteers will be doing..."></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>What do volunteers get?</label>
+      <input type="text" id="input-price" placeholder="e.g. Free entry + dinner">
+    </div>
+
+    <button id="submit-btn">Post Opportunity</button>
+    <p id="success-msg" style="display:none;">Your opportunity has been posted!</p>
+  </div>
+
+  <script src="create.js"></script>
+
+</body>
+</html>

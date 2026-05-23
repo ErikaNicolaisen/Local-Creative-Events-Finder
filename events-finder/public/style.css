@@ -107,3 +107,79 @@ body {
   border-radius: 12px;
   overflow: hidden;
 }
+
+#create-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: #e9899b;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.form-page {
+  background: #feeaed;
+  min-height: 100vh;
+}
+
+#form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+#form-container h1 {
+  margin: 1rem 0 0.5rem;
+  color: #c0566a;
+}
+
+.form-subtitle {
+  color: #888;
+  margin-bottom: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: #7a4f4f;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 16px;
+  border: 1px solid #f0c0c0;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: white;
+  outline: none;
+}
+
+#submit-btn {
+  background: #e9899b;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+#success-msg {
+  text-align: center;
+  margin-top: 1rem;
+  color: #c0566a;
+  font-size: 1.1rem;
+}
