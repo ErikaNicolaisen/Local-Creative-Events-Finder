@@ -12,10 +12,11 @@ function initBgMap() {
       { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#f91212" }] },
       { featureType: "road.arterial", elementType: "geometry.fill", stylers: [{ color: "#ffe0e0" }] },
       { featureType: "road.highway", elementType: "geometry.fill", stylers: [{ color: "#ec2121" }] },
-      { featureType: "park", elementType: "geometry.fill", stylers: [{ color: "#daede9" }] },
+      { featureType: "landscape.natural", elementType: "geometry.fill", stylers: [{ color: "#daede9" }] },
       { featureType: "landscape", elementType: "geometry.fill", stylers: [{ color: "#f4d3d3" }] },
       { featureType: "poi", stylers: [{ visibility: "off" }] },
-      { featureType: "transit", stylers: [{ visibility: "off" }] }
+      { featureType: "all", elementType: "labels", stylers: [{ visibility: "off" }] },
+      { featureType: "transit", stylers: [{ visibility: "off" }] },
     ]
   })
 }
@@ -24,6 +25,3 @@ function goToMap(category) {
   window.location.href = 'map.html?category=' + category
 }
 
-  setTimeout(() => {
-  window.location.href = 'index.html'
-}, 5000)
