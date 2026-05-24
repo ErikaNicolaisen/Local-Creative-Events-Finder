@@ -7,8 +7,12 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a href="create.html" id="create-btn">+ Post Opportunity</a>
-  <a href="index.html" id="home-btn">← Back to Frontpage</a>
+  <button id="sidebar-toggle">☰</button>
+
+  <div id="sidebar">
+    <a href="index.html">← Frontpage</a>
+    <a href="create.html">+ Post Opportunity</a>
+  </div>
 
   <div id="controls">
     <input type="text" id="search-input" placeholder="Search events...">
@@ -23,6 +27,11 @@
 
   <div id="map"></div>
 
+  <script>
+    document.getElementById('sidebar-toggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('open')
+    })
+  </script>
   <script src="app.js"></script>
   <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlgJkuLFPCYF61ul8YEl7IEzxwGDEFzP8&callback=initMap"></script>
 </body>

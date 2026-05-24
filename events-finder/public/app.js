@@ -29,6 +29,7 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 55.6761, lng: 12.5683 },
     zoom: 13,
+    mapTypeControl: false,
     styles: [
       { featureType: "all", elementType: "geometry", stylers: [{ color: "#ee9841" }] },
       { featureType: "all", elementType: "labels.text.fill", stylers: [{ color: "#5a5a5a" }] },
@@ -41,7 +42,8 @@ function initMap() {
       { featureType: "park", elementType: "geometry.fill", stylers: [{ color: "#daede9" }] },
       { featureType: "landscape", elementType: "geometry.fill", stylers: [{ color: "#f4d3d3" }] },
       { featureType: "poi", stylers: [{ visibility: "off" }] },
-      { featureType: "transit", stylers: [{ visibility: "off" }] }
+      { featureType: "transit", stylers: [{ visibility: "off" }] },
+      { featureType: "all", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
     ]
   })
 

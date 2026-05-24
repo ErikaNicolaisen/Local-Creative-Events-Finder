@@ -322,3 +322,46 @@ body {
   border-radius: 12px;
   text-align: center;
 }
+
+#sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  left: 10px;
+  z-index: 20;
+  background: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+#sidebar {
+  position: absolute;
+  top: 0;
+  left: -260px;
+  width: 260px;
+  height: 100vh;
+  background: white;
+  z-index: 15;
+  padding: 80px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 2px 0 12px rgba(0,0,0,0.15);
+  transition: left 0.3s ease;
+}
+
+#sidebar.open {
+  left: 0;
+}
+
+#sidebar a {
+  color: #c0566a;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0c0c0;
+}
