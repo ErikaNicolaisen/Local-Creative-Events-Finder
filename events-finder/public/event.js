@@ -11,10 +11,9 @@ function initEventPage() {
 
   Promise.all([
     fetch('http://localhost:3000/kune').then(r => r.json()),
-    fetch('http://localhost:3000/alice').then(r => r.json()),
-    fetch('http://localhost:3000/distortion').then(r => r.json())
-  ]).then(([kune, alice, distortion]) => {
-    event = [...kune, ...alice, ...distortion].find(e => e.id === id)
+    fetch('http://localhost:3000/alice').then(r => r.json())
+  ]).then(([kune, alice]) => {
+    event = [...kune, ...alice].find(e => e.id === id)
     if (event) showEvent(event)
   })
 }

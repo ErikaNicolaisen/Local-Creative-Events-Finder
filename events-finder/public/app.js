@@ -17,6 +17,15 @@ let map
 let markers = []
 
 function initMap() {
+  const params = new URLSearchParams(window.location.search)
+  const cat = params.get('category')
+  if (cat) {
+    activeCategory = cat
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.remove('active')
+      if (btn.dataset.category === cat) btn.classList.add('active')
+    })
+  }
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 55.6761, lng: 12.5683 },
     zoom: 13,

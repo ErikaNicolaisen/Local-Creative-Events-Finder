@@ -3,26 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Local Creative Events</title>
+  <title>StageUp CPH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <a href="create.html" id="create-btn">+ Post Opportunity</a>
 
-  <div id="controls">
-    <input type="text" id="search-input" placeholder="Search events...">
-    <div id="filters">
-      <button class="filter-btn active" data-category="all">All</button>
-      <button class="filter-btn" data-category="lighting">Lighting</button>
-      <button class="filter-btn" data-category="sound">Sound</button>
-      <button class="filter-btn" data-category="photography">Photography</button>
-      <button class="filter-btn" data-category="stage">Stage</button>
+  <div id="bg-map"></div>
+  <div class="overlay"></div>
+
+  <div class="content">
+    <h1>StageUp</h1>
+    <p class="tagline">Find volunteer shifts at Copenhagen's best festivals and venues.This will strengthen your abilities and expand your network!<br> See the categories her:</p>
+
+    <div class="category-row">
+      <button class="cat-btn" onclick="goToMap('stage')">Stage</button>
+      <button class="cat-btn" onclick="goToMap('sound')">Sound</button>
+      <button class="cat-btn" onclick="goToMap('lighting')">Lighting</button>
+      <button class="cat-btn" onclick="goToMap('photography')">Photography</button>
     </div>
+
+    <a href="map.html" class="go-btn">GO TO MAP</a>
+    <span class="divider">or</span>
+    <a href="create.html" class="submit-link">Sign up a volunteer shift</a>
   </div>
 
-  <div id="map"></div>
-
-  <script src="app.js"></script>
-  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlgJkuLFPCYF61ul8YEl7IEzxwGDEFzP8&callback=initMap"></script>
+  <script src="landing.js"></script>
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlgJkuLFPCYF61ul8YEl7IEzxwGDEFzP8&callback=initBgMap"></script>
 </body>
 </html>
