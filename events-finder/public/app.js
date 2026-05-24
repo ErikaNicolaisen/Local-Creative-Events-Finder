@@ -16,6 +16,52 @@ let searchTerm = ''
 let map
 let markers = []
 
+function getLiked() {
+  return JSON.parse(localStorage.getItem('likedEvents') || '[]')
+}
+
+function toggleLike(event) {
+  const liked = getLiked()
+  const idx = liked.findIndex(e => e.id === event.id)
+  if (idx === -1) {
+    liked.push(event)
+  } else {
+    liked.splice(idx, 1)
+  }
+  localStorage.setItem('likedEvents', JSON.stringify(liked))
+  renderSidebar()
+}
+window.toggleLike = toggleLike
+
+function clearLiked() {
+  localStorage.removeItem('likedEvents')
+  renderSidebar()
+}
+window.clearLiked = clearLiked
+window.isLiked = isLiked
+
+function isLiked(id) {
+  return getLiked().some(e => e.id === id)
+}
+
+function renderSidebar() {
+  const liked = getLiked()
+  const container = document.getElementById('liked-list')
+  if (!container) return
+  container.innerHTML = ''
+  if (liked.length === 0) {
+    container.innerHTML = '<p style="color:#aaa;font-size:0.85rem;">No liked events yet</p>'
+    return
+  }
+  liked.forEach(e => {
+    const a = document.createElement('a')
+    a.href = 'event.html?id=' + e.id
+    a.textContent = e.title
+    a.style.cssText = 'display:block;color:#c0566a;text-decoration:none;font-size:0.85rem;padding:8px 0;border-bottom:1px solid #f0c0c0;'
+    container.appendChild(a)
+  })
+}
+
 function initMap() {
   const params = new URLSearchParams(window.location.search)
   const cat = params.get('category')
@@ -26,28 +72,29 @@ function initMap() {
       if (btn.dataset.category === cat) btn.classList.add('active')
     })
   }
+
   map = new google.maps.Map(document.getElementById('map'), {
     center: { lat: 55.6761, lng: 12.5683 },
     zoom: 13,
     mapTypeControl: false,
     styles: [
-      { featureType: "all", elementType: "geometry", stylers: [{ color: "#ee9841" }] },
+      { featureType: "all", elementType: "geometry", stylers: [{ color: "#f5cdcd" }] },
       { featureType: "all", elementType: "labels.text.fill", stylers: [{ color: "#5a5a5a" }] },
       { featureType: "all", elementType: "labels.text.stroke", stylers: [{ color: "#f5f0eb" }] },
-      { featureType: "water", elementType: "geometry.fill", stylers: [{ color: "#f30909" }] },
-      { featureType: "road", elementType: "geometry.fill", stylers: [{ color: "#007bff" }] },
-      { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#f91212" }] },
+      { featureType: "water", elementType: "geometry.fill", stylers: [{ color: "#c3f2f6" }] },
+      { featureType: "road", elementType: "geometry.fill", stylers: [{ color: "#f9ac9c" }] },
+      { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#f5bef9" }] },
       { featureType: "road.arterial", elementType: "geometry.fill", stylers: [{ color: "#ffe0e0" }] },
-      { featureType: "road.highway", elementType: "geometry.fill", stylers: [{ color: "#ec2121" }] },
-      { featureType: "park", elementType: "geometry.fill", stylers: [{ color: "#daede9" }] },
-      { featureType: "landscape", elementType: "geometry.fill", stylers: [{ color: "#f4d3d3" }] },
+      { featureType: "road.highway", elementType: "geometry.fill", stylers: [{ color: "#e46666" }] },
+      { featureType: "landscape.natural", elementType: "geometry.fill", stylers: [{ color: "#d2ead7" }] },
       { featureType: "poi", stylers: [{ visibility: "off" }] },
       { featureType: "transit", stylers: [{ visibility: "off" }] },
-      { featureType: "all", elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+      { featureType: "all", elementType: "labels.icon", stylers: [{ visibility: "off" }] }
     ]
   })
 
   renderMarkers()
+  renderSidebar()
   setupSearch()
   setupFilters()
   loadScrapedEvents()
@@ -68,20 +115,20 @@ function renderMarkers() {
 
       const link = event.link || 'event.html?id=' + event.id
       const target = event.link ? '_blank' : '_self'
+      const liked = isLiked(event.id)
 
       const infoWindow = new google.maps.InfoWindow({
-      content: `
-        <div style="max-width:500px;font-family:Arial,sans-serif;">
-          <strong style="color:#c0566a;">${event.title}</strong><br>
-          <span style="color:#888;">📅 ${event.date}</span><br>
-          <span style="color:#888;">📍 ${event.location}</span><br>
-          <span style="color:#888;">🎛 ${event.category}</span><br><br>
-          <a href="${link}" target="${target}" style="background:#e9899b;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;font-size:0.85rem;">
-            See more
-          </a>
-        </div>
-      `
-    })
+        content: `
+          <div style="max-width:500px;font-family:Arial,sans-serif;">
+            <strong style="color:#c0566a;">${event.title}</strong><br>
+            <span style="color:#888;">📅 ${event.date}</span><br>
+            <span style="color:#888;">📍 ${event.location}</span><br>
+            <span style="color:#888;">🎛 ${event.category}</span><br><br>
+            <a href="${link}" target="${target}" style="background:#e9899b;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;font-size:0.85rem;">See more</a>
+            <button id="like-btn-${event.id}" onclick="toggleLike(${JSON.stringify(event).replace(/"/g, '&quot;')}); this.textContent=window.isLiked(${event.id})?'❤️':'♡'" style="background:none;border:2px solid #e9899b;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:0.9rem;margin-left:8px;">${liked ? '❤️' : '♡'}</button>
+          </div>
+        `
+      })
 
       marker.addListener('click', () => infoWindow.open(map, marker))
       markers.push(marker)
@@ -109,18 +156,28 @@ function setupFilters() {
 
 async function loadScrapedEvents() {
   try {
-    const [kuneRes, aliceRes] = await Promise.all([
+    const [kuneRes, aliceRes, cphdoxRes, basementRes, kulturRes] = await Promise.all([
       fetch('http://localhost:3000/kune'),
-      fetch('http://localhost:3000/alice')
+      fetch('http://localhost:3000/alice'),
+      fetch('http://localhost:3000/cphdox'),
+      fetch('http://localhost:3000/basement'),
+      fetch('http://localhost:3000/kulturensfrivillige')
     ])
 
     const kune = await kuneRes.json()
     const alice = await aliceRes.json()
+    const cphdox = await cphdoxRes.json()
+    const basement = await basementRes.json()
+    const kultur = await kulturRes.json()
 
     kune.forEach(e => { delete e.link; events.push(e) })
-    alice.forEach(e => events.push(e))
+    alice.forEach(e => { delete e.link; events.push(e) })
+    cphdox.forEach(e => { delete e.link; events.push(e) })
+    basement.forEach(e => { delete e.link; events.push(e) })
+    kultur.forEach(e => { delete e.link; events.push(e) })
 
     renderMarkers()
+    renderSidebar()
   } catch (err) {
     console.error('Could not load events:', err)
   }

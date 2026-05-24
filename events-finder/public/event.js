@@ -2,18 +2,15 @@ function initEventPage() {
   const params = new URLSearchParams(window.location.search)
   const id = parseInt(params.get('id'))
 
-  let event = events.find(e => e.id === id)
-
-  if (event) {
-    showEvent(event)
-    return
-  }
-
   Promise.all([
     fetch('http://localhost:3000/kune').then(r => r.json()),
-    fetch('http://localhost:3000/alice').then(r => r.json())
-  ]).then(([kune, alice]) => {
-    event = [...kune, ...alice].find(e => e.id === id)
+    fetch('http://localhost:3000/alice').then(r => r.json()),
+    fetch('http://localhost:3000/cphdox').then(r => r.json()),
+    fetch('http://localhost:3000/basement').then(r => r.json()),
+    fetch('http://localhost:3000/kulturensfrivillige').then(r => r.json())
+  ]).then(([kune, alice, cphdox, basement, kultur]) => {
+    const all = [...events, ...kune, ...alice, ...cphdox, ...basement, ...kultur]
+    const event = all.find(e => e.id === id)
     if (event) showEvent(event)
   })
 }
@@ -26,6 +23,24 @@ function showEvent(event) {
   document.getElementById('event-price').textContent = '🎟 ' + event.price
   document.getElementById('event-category').textContent = '🎛 ' + event.category
   document.getElementById('event-description').textContent = event.description
+
+  const likeBtn = document.getElementById('like-btn')
+  const liked = JSON.parse(localStorage.getItem('likedEvents') || '[]')
+  const isLiked = liked.some(e => e.id === event.id)
+  likeBtn.textContent = isLiked ? '❤️' : '♡'
+
+  likeBtn.addEventListener('click', () => {
+    const liked = JSON.parse(localStorage.getItem('likedEvents') || '[]')
+    const idx = liked.findIndex(e => e.id === event.id)
+    if (idx === -1) {
+      liked.push(event)
+      likeBtn.textContent = '❤️'
+    } else {
+      liked.splice(idx, 1)
+      likeBtn.textContent = '♡'
+    }
+    localStorage.setItem('likedEvents', JSON.stringify(liked))
+  })
 
   const map = new google.maps.Map(document.getElementById('event-map'), {
     center: { lat: event.lat, lng: event.lng },
