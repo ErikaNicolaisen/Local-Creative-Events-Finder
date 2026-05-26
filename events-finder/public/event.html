@@ -4,22 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Event Details – StageUp CPH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="event-page">
 
   <div id="event-container">
     <a href="map.html" id="back-btn">← Back to map</a>
-    <h1 id="event-title"></h1>
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin:1rem 0 0.25rem;">
+      <h1 id="event-title" style="font-family:'Bebas Neue',sans-serif;font-size:3.5rem;letter-spacing:2px;flex:1;"></h1>
+      <button id="like-btn" style="background:none;border:none;font-size:2rem;cursor:pointer;margin-top:0.5rem;">♡</button>
+    </div>
     <div id="event-meta">
       <span id="event-date"></span>
       <span id="event-location"></span>
       <span id="event-price"></span>
       <span id="event-category"></span>
-      <button id="like-btn" style="background:none;border:none;font-size:1.5rem;cursor:pointer;margin-top:0.5rem;align-self:flex-start;">♡</button>
     </div>
-    <p id="event-description"></p>
-    <div id="event-map"></div>
+    <p id="event-description" style="margin:1.5rem 0;"></p>
+    <a id="event-link" target="_blank" style="display:none;background:#e9899b;color:white;padding:14px 32px;border-radius:25px;text-decoration:none;font-size:1rem;font-family:'Bebas Neue',sans-serif;letter-spacing:2px;margin-bottom:2rem;">📍 VISIT WEBSITE</a>
+    <div id="event-map" style="margin-top:2rem;"></div>
   </div>
 
   <script src="app.js"></script>

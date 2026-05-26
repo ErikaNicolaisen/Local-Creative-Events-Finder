@@ -33,16 +33,32 @@ function toggleLike(event) {
 }
 window.toggleLike = toggleLike
 
-function clearLiked() {
-  localStorage.removeItem('likedEvents')
+function isLiked(id) {
+  return getLiked().some(e => e.id === id)
+}
+window.isLiked = isLiked
+
+function removeLiked(id) {
+  const liked = getLiked().filter(e => e.id !== id)
+  localStorage.setItem('likedEvents', JSON.stringify(liked))
   renderSidebar()
 }
-window.clearLiked = clearLiked
-window.isLiked = isLiked
+window.removeLiked = removeLiked
 
 function isLiked(id) {
   return getLiked().some(e => e.id === id)
 }
+
+function deleteUserEvent(id) {
+  const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]')
+  const filtered = userEvents.filter(e => e.id !== id)
+  localStorage.setItem('userEvents', JSON.stringify(filtered))
+  const idx = events.findIndex(e => e.id === id)
+  if (idx !== -1) events.splice(idx, 1)
+  renderMarkers()
+  renderSidebar()
+}
+window.deleteUserEvent = deleteUserEvent
 
 function renderSidebar() {
   const liked = getLiked()
@@ -51,15 +67,35 @@ function renderSidebar() {
   container.innerHTML = ''
   if (liked.length === 0) {
     container.innerHTML = '<p style="color:#aaa;font-size:0.85rem;">No liked events yet</p>'
-    return
+  } else {
+    liked.forEach(e => {
+      const div = document.createElement('div')
+      div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;'
+      div.innerHTML = `
+        <a href="event.html?id=${e.id}" style="color:#c0566a;text-decoration:none;font-size:0.85rem;">${e.title}</a>
+        <button onclick="removeLiked(${e.id})" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:0.8rem;">✕</button>
+      `
+      container.appendChild(div)
+    })
   }
-  liked.forEach(e => {
-    const a = document.createElement('a')
-    a.href = 'event.html?id=' + e.id
-    a.textContent = e.title
-    a.style.cssText = 'display:block;color:#c0566a;text-decoration:none;font-size:0.85rem;padding:8px 0;border-bottom:1px solid #f0c0c0;'
-    container.appendChild(a)
-  })
+
+  const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]')
+  const userContainer = document.getElementById('user-events-list')
+  if (!userContainer) return
+  userContainer.innerHTML = ''
+  if (userEvents.length === 0) {
+    userContainer.innerHTML = '<p style="color:#aaa;font-size:0.85rem;">No posted events yet</p>'
+  } else {
+    userEvents.forEach(e => {
+      const div = document.createElement('div')
+      div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;'
+      div.innerHTML = `
+        <span style="color:#c0566a;font-size:0.85rem;">${e.title}</span>
+        <button onclick="deleteUserEvent(${e.id})" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:0.8rem;">✕</button>
+      `
+      userContainer.appendChild(div)
+    })
+  }
 }
 
 function initMap() {
@@ -74,7 +110,7 @@ function initMap() {
   }
 
   map = new google.maps.Map(document.getElementById('map'), {
-    center: { lat: 55.6761, lng: 12.5683 },
+    center: { lat: 55.6900, lng: 12.5900 },
     zoom: 13,
     mapTypeControl: false,
     styles: [
@@ -86,7 +122,7 @@ function initMap() {
       { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#f5bef9" }] },
       { featureType: "road.arterial", elementType: "geometry.fill", stylers: [{ color: "#ffe0e0" }] },
       { featureType: "road.highway", elementType: "geometry.fill", stylers: [{ color: "#e46666" }] },
-      { featureType: "landscape.natural", elementType: "geometry.fill", stylers: [{ color: "#d2ead7" }] },
+      { featureType: "landscape.natural", elementType: "geometry.fill", stylers: [{ color: "#f09f93" }] },
       { featureType: "poi", stylers: [{ visibility: "off" }] },
       { featureType: "transit", stylers: [{ visibility: "off" }] },
       { featureType: "all", elementType: "labels.icon", stylers: [{ visibility: "off" }] }
@@ -125,7 +161,7 @@ function renderMarkers() {
             <span style="color:#888;">📍 ${event.location}</span><br>
             <span style="color:#888;">🎛 ${event.category}</span><br><br>
             <a href="${link}" target="${target}" style="background:#e9899b;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;font-size:0.85rem;">See more</a>
-            <button id="like-btn-${event.id}" onclick="toggleLike(${JSON.stringify(event).replace(/"/g, '&quot;')}); this.textContent=window.isLiked(${event.id})?'❤️':'♡'" style="background:none;border:2px solid #e9899b;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:0.9rem;margin-left:8px;">${liked ? '❤️' : '♡'}</button>
+            <button id="like-btn-${event.id}" onclick="toggleLike(${JSON.stringify(event).replace(/"/g, '&quot;')}); document.getElementById('like-btn-${event.id}').textContent=isLiked(${event.id})?'❤️':'♡'" style="background:none;border:2px solid #e9899b;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:0.9rem;margin-left:8px;">${liked ? '❤️' : '♡'}</button>
           </div>
         `
       })
@@ -156,12 +192,13 @@ function setupFilters() {
 
 async function loadScrapedEvents() {
   try {
-    const [kuneRes, aliceRes, cphdoxRes, basementRes, kulturRes] = await Promise.all([
+    const [kuneRes, aliceRes, cphdoxRes, basementRes, kulturRes, timerRes] = await Promise.all([
       fetch('http://localhost:3000/kune'),
       fetch('http://localhost:3000/alice'),
       fetch('http://localhost:3000/cphdox'),
       fetch('http://localhost:3000/basement'),
-      fetch('http://localhost:3000/kulturensfrivillige')
+      fetch('http://localhost:3000/kulturensfrivillige'),
+      fetch('http://localhost:3000/48timer')
     ])
 
     const kune = await kuneRes.json()
@@ -169,12 +206,17 @@ async function loadScrapedEvents() {
     const cphdox = await cphdoxRes.json()
     const basement = await basementRes.json()
     const kultur = await kulturRes.json()
+    const timer = await timerRes.json()
 
     kune.forEach(e => { delete e.link; events.push(e) })
-    alice.forEach(e => { delete e.link; events.push(e) })
-    cphdox.forEach(e => { delete e.link; events.push(e) })
-    basement.forEach(e => { delete e.link; events.push(e) })
-    kultur.forEach(e => { delete e.link; events.push(e) })
+    alice.forEach(e => events.push(e))
+    cphdox.forEach(e => events.push(e))
+    basement.forEach(e => events.push(e))
+    kultur.forEach(e => events.push(e))
+    timer.forEach(e => events.push(e))
+
+    const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]')
+    userEvents.forEach(e => events.push(e))
 
     renderMarkers()
     renderSidebar()

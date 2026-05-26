@@ -57,7 +57,8 @@ app.get('/kune', async (req, res) => {
         description: $(el).next('p').text().trim() || 'Volunteer crew opportunity at KUNE Festival Copenhagen.',
         price: 'Free festival access',
         lat,
-        lng
+        lng,
+        sourceUrl: 'https://www.kunefestival.dk/volunteer'
       })
     })
 
@@ -95,7 +96,8 @@ app.get('/alice', async (req, res) => {
       date: 'Ongoing',
       location: 'ALICE, Nørre Allé 7, Copenhagen',
       description: mainDesc || 'Volunteer at ALICE, a non-profit music venue in Nørrebro, Copenhagen.',
-      price: 'Free concert tickets'
+      price: 'Free concert tickets',
+      sourceUrl: 'https://alicecph.com/en/volunteering/'
     }))
 
     res.json(result)
@@ -127,7 +129,8 @@ app.get('/cphdox', async (req, res) => {
       category: 'stage',
       price: 'Free festival pass + film tickets',
       lat: 55.6799 + (i * 0.001),
-      lng: 12.5772 + (i * 0.001)
+      lng: 12.5772 + (i * 0.001),
+      sourceUrl: 'https://cphdox.dk/da/bliv-frivillig-paa-cphdox-2026/'
     }))
 
     res.json(result)
@@ -155,7 +158,6 @@ app.get('/basement', async (req, res) => {
 
     const roles = [
       { id: 800, title: 'Basement – Bar Volunteer', category: 'stage', lat: 55.6658, lng: 12.5463 },
-      { id: 801, title: 'Basement – Entrance Crew', category: 'stage', lat: 55.6660, lng: 12.5465 },
       { id: 802, title: 'Basement – Photographer', category: 'photography', lat: 55.6656, lng: 12.5461 },
       { id: 803, title: 'Basement – Lighting', category: 'lighting', lat: 55.6659, lng: 12.5467 }
     ]
@@ -165,7 +167,8 @@ app.get('/basement', async (req, res) => {
       date: 'Ongoing',
       location: 'Basement, Enghavevej 42, Copenhagen',
       description: mainDesc || 'Volunteer at Basement, a music and culture venue on Vesterbro, Copenhagen.',
-      price: 'Free access to events'
+      price: 'Free access to events',
+      sourceUrl: 'https://basement.kk.dk/bliv-frivillig'
     }))
 
     res.json(result)
@@ -198,10 +201,81 @@ app.get('/kulturensfrivillige', async (req, res) => {
       description: mainDesc || 'Join the Content Team and experience Copenhagen\'s cultural scene from behind the lens.',
       price: 'Free access to events',
       lat: 55.6761,
-      lng: 12.5683
+      lng: 12.5683,
+      sourceUrl: 'https://www.kulturensfrivillige.dk/en/seneste-nyt/har-du-et-%C3%B8je-for-fotografi---s%C3%A5-bliv-en-del-af-vores-content-team'
     }]
 
     res.json(result)
+  } catch (err) {
+    console.error(err.message)
+    res.json([])
+  }
+})
+
+app.get('/48timer', async (req, res) => {
+  try {
+    const response = await axios.get('https://www.48timerfestival.dk/bliv-frivillig/fotograf-team/', {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    })
+    const $ = cheerio.load(response.data)
+
+    let mainDesc = ''
+    $('p').each((i, el) => {
+      const text = $(el).text().trim()
+      if (text.length > 100) {
+        mainDesc = text
+        return false
+      }
+    })
+
+    const result = [{
+      id: 1000,
+      title: '48TIMER Festival – Photographer',
+      date: 'May 12–14, 2026',
+      location: 'Blågårds Plads 2, Nørrebro, Copenhagen',
+      category: 'photography',
+      description: mainDesc || 'Join the photographer team at 48TIMER Festival on Nørrebro.',
+      price: 'Free festival access + T-shirt',
+      lat: 55.6897,
+      lng: 12.5530,
+      sourceUrl: 'https://www.48timerfestival.dk/bliv-frivillig/fotograf-team/'
+    }]
+
+    res.json(result)
+  } catch (err) {
+    console.error(err.message)
+    res.json([])
+  }
+})
+
+app.get('/venues', async (req, res) => {
+  const venues = [
+    { name: 'ALICE', address: 'Nørre Allé 7, 2200 København N', url: 'https://alicecph.com' },
+    { name: 'Basement', address: 'Enghavevej 42, 1674 København V', url: 'https://basement.kk.dk' },
+    { name: 'Kunsthal Charlottenborg', address: 'Kongens Nytorv 1, 1050 København K', url: 'https://kunsthalcharlottenborg.dk/en/' },
+    { name: 'Ungdomsøen / KUNE', address: 'Refshalevej, 1432 København K', url: 'https://www.kunefestival.dk' },
+    { name: '48TIMER Festival', address: 'Blågårds Plads 2, 2200 København N', url: 'https://www.48timerfestival.dk' },
+    { name: 'CPH:DOX', address: 'Kunsthal Charlottenborg, Copenhagen', url: 'https://cphdox.dk/da/bliv-frivillig-paa-cphdox-2026/' },
+  ]
+  res.json(venues)
+})
+
+app.get('/images', async (req, res) => {
+  try {
+    const response = await axios.get('https://www.48timerfestival.dk/galleri/', {
+      headers: { 'User-Agent': 'Mozilla/5.0' }
+    })
+    const $ = cheerio.load(response.data)
+    const images = []
+
+    $('img').each((i, el) => {
+      const src = $(el).attr('src')
+      if (src && src.includes('.jpg') && src.startsWith('http') && images.length < 6) {
+        images.push(src)
+      }
+    })
+
+    res.json(images)
   } catch (err) {
     console.error(err.message)
     res.json([])

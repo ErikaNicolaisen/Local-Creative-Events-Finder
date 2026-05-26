@@ -16,7 +16,7 @@ function initBgMap() {
       { featureType: "landscape", elementType: "geometry.fill", stylers: [{ color: "#f4d3d3" }] },
       { featureType: "poi", stylers: [{ visibility: "off" }] },
       { featureType: "all", elementType: "labels", stylers: [{ visibility: "off" }] },
-      { featureType: "transit", stylers: [{ visibility: "off" }] },
+      { featureType: "transit", stylers: [{ visibility: "off" }] }
     ]
   })
 }
@@ -24,4 +24,3 @@ function initBgMap() {
 function goToMap(category) {
   window.location.href = 'map.html?category=' + category
 }
-
