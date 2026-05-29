@@ -16,85 +16,88 @@ let searchTerm = ''
 let map
 let markers = []
 
-function getLiked() {
-  return JSON.parse(localStorage.getItem('likedEvents') || '[]')
+async function getLiked() {
+  const res = await fetch('/api/likes')
+  return res.json()
 }
 
-function toggleLike(event) {
-  const liked = getLiked()
-  const idx = liked.findIndex(e => e.id === event.id)
-  if (idx === -1) {
-    liked.push(event)
+async function toggleLike(event) {
+  const liked = await getLiked()
+  const alreadyLiked = liked.some(e => e.id === event.id)
+  if (alreadyLiked) {
+    await fetch(`/api/likes/${event.id}`, { method: 'DELETE' })
   } else {
-    liked.splice(idx, 1)
+    await fetch('/api/likes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(event)
+    })
   }
-  localStorage.setItem('likedEvents', JSON.stringify(liked))
-  renderSidebar()
+  await renderSidebar()
+  await renderMarkers()
 }
 window.toggleLike = toggleLike
 
-function isLiked(id) {
-  return getLiked().some(e => e.id === id)
+async function isLiked(id) {
+  const liked = await getLiked()
+  return liked.some(e => e.id === id)
 }
 window.isLiked = isLiked
 
-function removeLiked(id) {
-  const liked = getLiked().filter(e => e.id !== id)
-  localStorage.setItem('likedEvents', JSON.stringify(liked))
-  renderSidebar()
+async function removeLiked(id) {
+  await fetch(`/api/likes/${id}`, { method: 'DELETE' })
+  await renderSidebar()
+  await renderMarkers()
 }
 window.removeLiked = removeLiked
 
-function isLiked(id) {
-  return getLiked().some(e => e.id === id)
-}
-
-function deleteUserEvent(id) {
-  const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]')
-  const filtered = userEvents.filter(e => e.id !== id)
-  localStorage.setItem('userEvents', JSON.stringify(filtered))
+async function deleteUserEvent(id) {
+  await fetch(`/api/userevents/${id}`, { method: 'DELETE' })
   const idx = events.findIndex(e => e.id === id)
   if (idx !== -1) events.splice(idx, 1)
-  renderMarkers()
-  renderSidebar()
+  await renderMarkers()
+  await renderSidebar()
 }
 window.deleteUserEvent = deleteUserEvent
 
-function renderSidebar() {
-  const liked = getLiked()
+async function renderSidebar() {
+  const liked = await getLiked()
+  const userEvents = await fetch('/api/userevents').then(r => r.json())
+
   const container = document.getElementById('liked-list')
-  if (!container) return
-  container.innerHTML = ''
-  if (liked.length === 0) {
-    container.innerHTML = '<p style="color:#aaa;font-size:0.85rem;">No liked events yet</p>'
-  } else {
-    liked.forEach(e => {
-      const div = document.createElement('div')
-      div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;'
-      div.innerHTML = `
-        <a href="event.html?id=${e.id}" style="color:#c0566a;text-decoration:none;font-size:0.85rem;">${e.title}</a>
-        <button onclick="removeLiked(${e.id})" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:0.8rem;">✕</button>
-      `
-      container.appendChild(div)
-    })
+  if (container) {
+    container.innerHTML = ''
+    if (liked.length === 0) {
+      container.innerHTML = '<p style="color:#aaa;font-size:0.85rem;">No liked events yet</p>'
+    } else {
+      liked.forEach(e => {
+        const div = document.createElement('div')
+        div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;'
+        div.innerHTML = `
+          <a href="event.html?id=${e.id}" style="color:#c0566a;text-decoration:none;font-size:0.85rem;">${e.title}</a>
+          <button onclick="removeLiked(${e.id})" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:0.8rem;">✕</button>
+        `
+        container.appendChild(div)
+      })
+    }
   }
 
-  const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]')
   const userContainer = document.getElementById('user-events-list')
-  if (!userContainer) return
-  userContainer.innerHTML = ''
-  if (userEvents.length === 0) {
-    userContainer.innerHTML = '<p style="color:#aaa;font-size:0.85rem;">No posted events yet</p>'
-  } else {
-    userEvents.forEach(e => {
-      const div = document.createElement('div')
-      div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;'
-      div.innerHTML = `
-        <span style="color:#c0566a;font-size:0.85rem;">${e.title}</span>
-        <button onclick="deleteUserEvent(${e.id})" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:0.8rem;">✕</button>
-      `
-      userContainer.appendChild(div)
-    })
+  if (userContainer) {
+    userContainer.innerHTML = ''
+    if (userEvents.length === 0) {
+      userContainer.innerHTML = '<p style="color:#aaa;font-size:0.85rem;">No posted events yet</p>'
+    } else {
+      userEvents.forEach(e => {
+        const div = document.createElement('div')
+        div.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;'
+        div.innerHTML = `
+          <span style="color:#c0566a;font-size:0.85rem;">${e.title}</span>
+          <button onclick="deleteUserEvent(${e.id})" style="background:none;border:none;color:#aaa;cursor:pointer;font-size:0.8rem;">✕</button>
+        `
+        userContainer.appendChild(div)
+      })
+    }
   }
 }
 
@@ -129,16 +132,21 @@ function initMap() {
     ]
   })
 
-  renderMarkers()
-  renderSidebar()
   setupSearch()
   setupFilters()
-  loadScrapedEvents()
+
+  ;(async () => {
+    await renderMarkers()
+    await renderSidebar()
+    await loadScrapedEvents()
+  })()
 }
 
-function renderMarkers() {
+async function renderMarkers() {
   markers.forEach(m => m.setMap(null))
   markers = []
+
+  const liked = await getLiked()
 
   events
     .filter(e => (activeCategory === 'all' || e.category === activeCategory) && e.title.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -151,7 +159,7 @@ function renderMarkers() {
 
       const link = event.link || 'event.html?id=' + event.id
       const target = event.link ? '_blank' : '_self'
-      const liked = isLiked(event.id)
+      const isEventLiked = liked.some(e => e.id === event.id)
 
       const infoWindow = new google.maps.InfoWindow({
         content: `
@@ -161,7 +169,7 @@ function renderMarkers() {
             <span style="color:#888;">📍 ${event.location}</span><br>
             <span style="color:#888;">🎛 ${event.category}</span><br><br>
             <a href="${link}" target="${target}" style="background:#e9899b;color:white;padding:5px 10px;border-radius:4px;text-decoration:none;font-size:0.85rem;">See more</a>
-            <button id="like-btn-${event.id}" onclick="toggleLike(${JSON.stringify(event).replace(/"/g, '&quot;')}); document.getElementById('like-btn-${event.id}').textContent=isLiked(${event.id})?'❤️':'♡'" style="background:none;border:2px solid #e9899b;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:0.9rem;margin-left:8px;">${liked ? '❤️' : '♡'}</button>
+            <button id="like-btn-${event.id}" onclick="toggleLike(${JSON.stringify(event).replace(/"/g, '&quot;')})" style="background:none;border:2px solid #e9899b;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:0.9rem;margin-left:8px;">${isEventLiked ? '❤️' : '♡'}</button>
           </div>
         `
       })
@@ -193,12 +201,12 @@ function setupFilters() {
 async function loadScrapedEvents() {
   try {
     const [kuneRes, aliceRes, cphdoxRes, basementRes, kulturRes, timerRes] = await Promise.all([
-      fetch('http://localhost:3000/kune'),
-      fetch('http://localhost:3000/alice'),
-      fetch('http://localhost:3000/cphdox'),
-      fetch('http://localhost:3000/basement'),
-      fetch('http://localhost:3000/kulturensfrivillige'),
-      fetch('http://localhost:3000/48timer')
+      fetch('/kune'),
+      fetch('/alice'),
+      fetch('/cphdox'),
+      fetch('/basement'),
+      fetch('/kulturensfrivillige'),
+      fetch('/48timer')
     ])
 
     const kune = await kuneRes.json()
@@ -215,12 +223,17 @@ async function loadScrapedEvents() {
     kultur.forEach(e => events.push(e))
     timer.forEach(e => events.push(e))
 
-    const userEvents = JSON.parse(localStorage.getItem('userEvents') || '[]')
+    const userEvents = await fetch('/api/userevents').then(r => r.json())
     userEvents.forEach(e => events.push(e))
 
-    renderMarkers()
-    renderSidebar()
+    await renderMarkers()
+    await renderSidebar()
   } catch (err) {
     console.error('Could not load events:', err)
   }
 }
+
+app.get('/api/geocode', async (req, res) => {
+  const coords = await getCoordinates(req.query.address)
+  res.json(coords || { lat: 55.6761, lng: 12.5683 })
+})
