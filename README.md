@@ -29,3 +29,7 @@ Open your browser and go to:
 http://localhost:3000
 
 The website should now be running on your computer.
+
+### (Addition)
+If the website cannot be accessed, the content can also be viewed in this video:
+https://www.youtube.com/watch?v=WjSIjXNM5YE
