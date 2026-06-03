@@ -16,7 +16,7 @@ const UserEvent = mongoose.model('UserEvent', new mongoose.Schema({id: Number, t
 }))
 
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 app.use(express.static('public'))
 app.use(express.json())
