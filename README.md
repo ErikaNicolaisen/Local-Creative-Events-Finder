@@ -13,29 +13,19 @@ Before running the project, make sure you have **Node.js** installed on your com
 ## Getting Started
 
 ### 1. Clone the repository
-```
 git clone https://github.com/ErikaNicolaisen/Local-Creative-Events-Finder.git
-```
 
 ### 2. Navigate to the project folder
-```
 cd Local-Creative-Events-Finder/events-finder
-```
 
 ### 3. Install dependencies
-```
 npm install
-```
 
 ### 4. Start the server
-```
 node server.js
-```
 
 ### 5. Open the website
 Open your browser and go to:
-```
 http://localhost:3000
-```
 
-The website should now be running locally on your computer.
+The website should now be running on your computer.
