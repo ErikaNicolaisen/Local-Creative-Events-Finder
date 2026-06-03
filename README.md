@@ -16,7 +16,7 @@ Before running the project, make sure you have **Node.js** installed on your com
 git clone https://github.com/ErikaNicolaisen/Local-Creative-Events-Finder.git
 
 ### 2. Navigate to the project folder
-cd Local-Creative-Events-Finder/events-finder
+cd Local-Creative-Events-Finder or events-finder
 
 ### 3. Install dependencies
 npm install
