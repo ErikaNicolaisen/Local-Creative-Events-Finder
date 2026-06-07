@@ -41,7 +41,7 @@
   </div>
 
   <script>
-    fetch('http://localhost:3000/venues')
+    fetch('/venues')
       .then(r => r.json())
       .then(venues => {
         const grid = document.getElementById('venues-grid')
