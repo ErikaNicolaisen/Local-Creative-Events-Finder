@@ -3,12 +3,12 @@ function initEventPage() {
   const id = parseInt(params.get('id'))
 
   Promise.all([
-    fetch('http://localhost:3000/kune').then(r => r.json()),
-    fetch('http://localhost:3000/alice').then(r => r.json()),
-    fetch('http://localhost:3000/cphdox').then(r => r.json()),
-    fetch('http://localhost:3000/basement').then(r => r.json()),
-    fetch('http://localhost:3000/kulturensfrivillige').then(r => r.json()),
-    fetch('http://localhost:3000/48timer').then(r => r.json())
+  fetch('/kune').then(r => r.json()),
+  fetch('/alice').then(r => r.json()),
+  fetch('/cphdox').then(r => r.json()),
+  fetch('/basement').then(r => r.json()),
+  fetch('/kulturensfrivillige').then(r => r.json()),
+  fetch('/48timer').then(r => r.json())
   ]).then(([kune, alice, cphdox, basement, kultur, timer]) => {
     const all = [...events, ...kune, ...alice, ...cphdox, ...basement, ...kultur, ...timer]
     const event = all.find(e => e.id === id)
