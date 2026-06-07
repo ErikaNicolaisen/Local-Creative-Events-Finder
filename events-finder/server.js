@@ -6,7 +6,7 @@ const mongoose = require('mongoose')
 
 dotenv.config()
 
-mongoose.connect('mongodb+srv://ErikaBrinck:Render123@cluster0.ul8t7ms.mongodb.net/volunteermap?appName=Cluster0')
+mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.error('MongoDB error:', err))
 
