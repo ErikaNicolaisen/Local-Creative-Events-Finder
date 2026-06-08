@@ -10,3 +10,8 @@ music and events industry.
 Click the link below to open the website:
 
 https://local-creative-events-finder-production.up.railway.app/index.html
+
+## See a video of the website
+Click the link below to view the video:
+
+https://www.youtube.com/watch?v=WjSIjXNM5YE
