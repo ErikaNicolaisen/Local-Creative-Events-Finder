@@ -6,30 +6,7 @@ The goal is to make it easier for people interested in these fields to find rele
 experience, build their CVs, and expand their professional network within the live 
 music and events industry.
 
-## Prerequisites
+## How to access the website
+Click the link below to open the website:
 
-Before running the project, make sure you have **Node.js** installed on your computer.
-
-## Getting Started
-
-### 1. Clone the repository
-git clone https://github.com/ErikaNicolaisen/Local-Creative-Events-Finder.git
-
-### 2. Navigate to the project folder
-cd Local-Creative-Events-Finder or events-finder (this part have been bothering me a lot, sometimes you have to write Local-Creative-Events-Finder, and other times you have to write events-finder. I really hope this works out).
-
-### 3. Install dependencies
-npm install
-
-### 4. Start the server
-node server.js
-
-### 5. Open the website
-Open your browser and go to:
-http://localhost:3000
-
-The website should now be running on your computer.
-
-### (Addition)
-If the website cannot be accessed, the content can also be viewed in this video:
-https://www.youtube.com/watch?v=WjSIjXNM5YE
+https://local-creative-events-finder-production.up.railway.app/index.html
